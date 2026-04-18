@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsTrimmable>true</IsTrimmable>
+    <JavaSdkDirectory>E:\Software\JDK-21</JavaSdkDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView" Version="10.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="build/Blazor.Android.Build.targets"  Pack="true" PackagePath="build/" />
+  </ItemGroup>
+  
+</Project>

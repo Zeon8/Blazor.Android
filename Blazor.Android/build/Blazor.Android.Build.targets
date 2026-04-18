@@ -1,0 +1,80 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Content Update="global.json" PublishFolderType="None" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+    <StaticWebAssetProjectMode>Root</StaticWebAssetProjectMode>
+  </PropertyGroup>
+
+  <Target Name="ConvertStaticAssetsToAndroidAssets"
+          BeforeTargets="_AddStaticResources"
+          DependsOnTargets="ResolveProjectReferences;StaticWebAssetsPrepareForRun;StaticWebAssetsPrepareForPublish;LoadStaticWebAssetsPublishManifest">
+
+    <ComputeStaticWebAssetsTargetPaths Assets="@(StaticWebAsset)" PathPrefix="wwwroot">
+      <Output TaskParameter="AssetsWithTargetPath" ItemName="_MauiStaticWebAssetWithTargetPath" />
+    </ComputeStaticWebAssetsTargetPaths>
+
+    <ItemGroup>
+      <AndroidAsset Include="%(_MauiStaticWebAssetWithTargetPath.Identity)">
+        <Link>%(_MauiStaticWebAssetWithTargetPath.TargetPath)</Link>
+        <TargetPath>%(_MauiStaticWebAssetWithTargetPath.TargetPath)</TargetPath>
+      </AndroidAsset>
+    </ItemGroup>
+
+    <!-- Update Content files that are managed by the Razor SDK to opt out of iOS and Android content-checks -->
+    <ItemGroup>
+      <!-- .razor.css scoped css files -->
+      <_ContentNotScopedCssFiles Include="@(Content)" Exclude="@(ScopedCssInput)" />
+      <_ContentToUpdate Include="@(Content)" Exclude="@(_ContentNotScopedCssFiles)" />
+
+      <!-- .razor files -->
+      <_ContentToUpdate Include="@(Content->WithMetadataValue('Extension', '.razor'))" />
+
+      <Content Remove="@(_ContentToUpdate)" />
+      <Content Include="@(_ContentToUpdate)" ExcludeFromContentCheck="true" PublishFolderType="None" />
+
+      <!-- Remove the items in AppDesignerFolder ("Properties", by default) so they don't get copied to the output directory -->
+      <Content Remove="$(AppDesignerFolder)\**" Condition="'$(AppDesignerFolder)' != ''" />
+    </ItemGroup>
+
+  </Target>
+
+  <Target Name="_RemoveStaticWebAssetsDevelopmentManifest" BeforeTargets="GetCopyToOutputDirectoryItems">
+    <!-- Remove the development manifest from the output since its not used and it will otherwise get incorrectly loaded in production. -->
+    <ItemGroup>
+      <ContentWithTargetPath Remove="$(StaticWebAssetDevelopmentManifestPath)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Targets temporarily remove Content items in various folders so that they don't conflict with Android SDK tasks -->
+  <Target Name="HideContentFromAndroidCheck" BeforeTargets="_CheckForContent">
+    <ItemGroup>
+      <_TemporaryAndroidHiddenContent Include="@(Content)" />
+      <Content Remove="@(Content)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Restore hidden Content items for Android -->
+  <Target Name="RestoreHiddenAndroidContent" AfterTargets="_CheckForContent">
+    <ItemGroup>
+      <Content Include="@(_TemporaryAndroidHiddenContent)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Include computed static web assets in the single-file bundle. Other static web assets
+       are already included via the normal ResolvedFileToPublish flow. -->
+  <Target Name="_IncludeComputedStaticWebAssetsInSingleFileBundle"
+          AfterTargets="_ComputeFilesToBundle"
+          BeforeTargets="PrepareForBundle"
+          Condition="'$(PublishSingleFile)' == 'true'">
+
+    <ItemGroup>
+      <_FilesToBundle Include="@(_PublishStaticWebAssetsPreserveNewest)" Condition="'%(_PublishStaticWebAssetsPreserveNewest.SourceType)' == 'Computed'">
+        <RelativePath>%(_PublishStaticWebAssetsPreserveNewest.TargetPath)</RelativePath>
+      </_FilesToBundle>
+    </ItemGroup>
+  </Target>
+
+</Project>

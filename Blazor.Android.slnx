@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Blazor.Android.Sample/Blazor.Android.Sample.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="Blazor.Android/Blazor.Android.csproj" Id="82a62e4a-c61d-44b2-9e83-d240e23cce87" />
+</Solution>

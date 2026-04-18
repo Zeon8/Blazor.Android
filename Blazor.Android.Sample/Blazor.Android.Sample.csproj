@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
+    <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationId>com.zeon4.AndroidSample</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <!--<TrimMode>full</TrimMode>-->
+    <AndroidSdkDirectory>E:\Software\Android\SDK</AndroidSdkDirectory>
+    <JavaSdkDirectory>E:\Software\JDK-21</JavaSdkDirectory>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Blazor.Android\Blazor.Android.csproj" />
+  </ItemGroup>
+
+  <Import Project="../Blazor.Android/build/Blazor.Android.Build.targets"/>
+</Project>
