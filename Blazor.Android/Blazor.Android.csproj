@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsTrimmable>true</IsTrimmable>
+    <Version>0.1.0</Version>
+    <Authors>Zeon4</Authors>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Zeon8/Blazor.Android</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="build/Blazor.Android.Build.targets"  Pack="true" PackagePath="build/" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="build/**">
+      <Pack>true</Pack>
+      <PackagePath>build/</PackagePath>
+    </None>
   </ItemGroup>
   
 </Project>
